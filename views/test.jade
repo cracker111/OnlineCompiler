@@ -1,0 +1,95 @@
+html
+  head
+    title Practice programming online.
+    link(rel='stylesheet', href='http://codemirror.net/lib/codemirror.css')
+    link(rel='stylesheet', href='http://codemirror.net/3/theme/base16-dark.css')
+    link(rel='stylesheet', href='http://codemirror.net/3/theme/monokai.css')
+    style(type='text/css').
+      .CodeMirror {
+      width: 50% !important;
+      height: 60% !important;
+      }
+    script(src='http://code.jquery.com/jquery-1.6.2.min.js')
+    script(src='http://codemirror.net/lib/codemirror.js')
+    script(src='http://codemirror.net/addon/edit/matchbrackets.js')
+    script(src='http://codemirror.net/mode/javascript/javascript.js')
+    script.
+      window.onload = function () {
+      var text = document.getElementById('user_code');
+      var editableCodeMirror = CodeMirror.fromTextArea(text, {
+      mode: "javascript",
+      matchBrackets: true,
+      theme: "default",
+      lineNumbers: true,
+      lineWrapping: true
+      });
+      //Manual syncing isn't needed for POST requests,
+      //but *is* needed if the <textarea> value is used client-side..
+      //http://stackoverflow.com/a/18167210
+      editableCodeMirror.on('change', function (cm) {
+      text.value = cm.getValue();
+      });
+      document.getElementById('selectbox').on('change', function(){
+      var e = document.getElementById("selectbox");
+      var lang = e.options[e.selectedIndex].value;
+      editableCodemirror.setOption("theme", lang);
+      });
+      //http://stackoverflow.com/questions/9506653/how-to-add-event-handlers-to-html-buttons-from-within-javascript-code
+      };
+    script(type='text/javascript').
+      function addinputbox() {
+      if (document.getElementById('cbox').checked)
+      {
+      var div = document.getElementById("user_input");
+      var input = document.createElement("textarea");
+      input.id = "usr_input";
+      input.name = "usrinput";
+      input.style.width = "50%";
+      input.style.height = "20%";
+      input.style.resize = "none";
+      div.appendChild(input);
+      }
+      else
+      {
+      document.getElementById("user_input").innerHTML = "";
+      var div = document.getElementById("user_input");
+      div.removeChild(div.childNodes[0]);
+      }
+      }
+      $(function(){
+      $("#user_program").submit(function(e){
+      e.preventDefault();
+      document.getElementById("btn").disabled=true;
+      $("#user_output").val('');
+      console.log('select_link clicked');
+      var d = "Nilesh";
+      $.ajax({
+      type: 'POST',
+      data: $("#user_program").serialize(),
+      url: '/submit_code',
+      success: function(data) {
+      document.getElementById("btn").disabled=false;
+      $("#user_output").val(data);
+      console.log('success');
+      console.log(JSON.stringify(data));
+      }
+      });
+      });
+      });
+  body
+    form#user_program(action='/submit_code', method='POST', style='height:100%; width: 100%; left:4%;position:relative;')
+      div(style='display: inline-block; width: 50%;')
+        select#selectbox
+          option(value='default') default
+          option(value='base16-dark') base16-dark
+          option(value='monokai') monokai
+        div(style='border:1px solid black')
+          textarea#user_code(name='code', style='position:relative; resize: none; height:60%; width:100%;')
+      div(style='display: inline-block; width: 40%;')
+        textarea#user_output(name='output', style='position:relative; resize: none; height:60%; width:100%; left: 1%')  
+      br
+      input#btn(type='submit')
+      input#cbox(name='chkbox', type='checkbox', onclick='addinputbox()')
+      | Provide your input
+      br
+      #user_input
