@@ -1,0 +1,35 @@
+{
+  "name": "online_compiler",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "*",
+    "body-parser": "*",
+    "check-types": "*",
+    "codemirror": "^5.8.0",
+    "connect-flash": "*",
+    "cookie-parser": "*",
+    "debug": "*",
+    "dialog": "*",
+    "easysoap": "^1.0.4",
+    "express": "*",
+    "express-session": "*",
+    "fs": "0.0.2",
+    "jade": "*",
+    "jquery": "*",
+    "mongodb": "*",
+    "monk": "*",
+    "morgan": "*",
+    "node-metainspector": "*",
+    "passport": "*",
+    "passport-local": "*",
+    "path": "^0.12.7",
+    "serve-favicon": "*",
+    "soap": "^0.11.0",
+    "string": "*",
+    "type-of-is": "^3.4.0"
+  }
+}

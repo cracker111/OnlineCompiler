@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <signal.h>
+#include <fcntl.h> 
+#include <unistd.h>
+
+int main()
+{
+	int status;
+   pid_t pid;
+   pid=fork();
+  if(pid==0){
+    printf("This is the Child process \n");
+	//exit(0);
+ }
+  else if(pid>0){
+    printf("This is the parent process \n");
+	if(waitpid(pid,&status,WNOHANG)>0)
+	{
+	  printf("Status : %d\n",status);
+	  printf("Child terminated : %d\n");
+	}
+	else
+	{
+	  printf("Status : %d\n",status);
+	  printf("Child terminated : %d\n");
+	}
+}
+  else
+    printf("Operation unsuccessful \n");
+
+  return 0;    
+}

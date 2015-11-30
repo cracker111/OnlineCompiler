@@ -1,0 +1,95 @@
+html
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title Practice programming online.
+    link(rel='stylesheet', href='http://codemirror.net/lib/codemirror.css')
+    link(rel='stylesheet', href='http://codemirror.net/3/theme/eclipse.css')
+    link(rel='stylesheet', href='http://codemirror.net/3/theme/monokai.css')
+    link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css')
+    style(type='text/css').
+      .CodeMirror {
+      width: 100% !important;
+      height: 60% !important;
+      }
+    script(src='http://code.jquery.com/jquery-1.6.2.min.js')
+    script(src='http://codemirror.net/lib/codemirror.js')
+    script(src='http://codemirror.net/addon/edit/matchbrackets.js')
+    script(src='http://codemirror.net/mode/clike/clike.js')
+    script(type='text/javascript').
+      function addinputbox() {
+      if (document.getElementById('cbox').checked)
+      {
+      var div = document.getElementById("user_input");
+      var input = document.createElement("textarea");
+      input.id = "usr_input";
+      input.name = "usrinput";
+      input.style.width = "50%";
+      input.style.height = "30%";
+      input.style.resize = "none";
+      div.appendChild(input);
+      }
+      else
+      {
+      document.getElementById("user_input").innerHTML = "";
+      var div = document.getElementById("user_input");
+      div.removeChild(div.childNodes[0]);
+      }
+      }
+      $(function(){
+      $("#user_program").submit(function(e){
+      e.preventDefault();
+      document.getElementById("btn").disabled=true;
+      $("#user_output").val('');
+      console.log('select_link clicked');
+      var d = "Nilesh";
+      $.ajax({
+      type: 'POST',
+      data: $("#user_program").serialize(),
+      url: '/submit_code',
+      success: function(data) {
+      document.getElementById("btn").disabled=false;
+      $("#user_output").val(data);
+      console.log('success');
+      console.log(JSON.stringify(data));
+      }
+      });
+      });
+      });
+  body
+    nav.navbar.navbar-inverse.navbar-fixed-top
+      .navbar-header
+        p.navbar-brand(style='left:45%; position:relative;') CodeOnline
+    form#user_program(action='/submit_code', method='POST', style='top: 8%; height:80%; width: 95%; left:4%;position:relative;')
+      div(style='display: inline-block; width: 50%;')
+        select.form-control(name='selectbox', onchange='selectmode(this)', style='width:15%;')
+          option(value='text/x-csrc') C
+          option(value='text/x-c++src') C++
+          option(value='text/x-java') Java
+        div(style='border:1px solid black')
+          textarea#user_code(name='code', style='position:relative; resize: none; height:60%; width:100%;')
+      div(style='display: inline-block; width: 40%;')
+        textarea#user_output(readonly='true', name='output', style='position:relative; resize: none; height:60%; width:100%; left: 1%')  
+      br
+      input#btn.btn.btn-primary(type='submit')
+      &nbsp; &nbsp;
+      input#cbox(name='chkbox', type='checkbox', onclick='addinputbox()')
+      | Provide your input
+      br
+      #user_input
+    script.
+      var text = document.getElementById('user_code');
+      var editor = CodeMirror.fromTextArea(text, {
+      mode: "text\\\\\x-csrc",
+      matchBrackets: true,
+      theme: "eclipse",
+      lineNumbers: true,
+      lineWrapping: true
+      });
+      editor.on('change', function (cm) {
+      text.value = cm.getValue();
+      });
+      function selectmode(node) {
+      var mode = node.options[node.selectedIndex].value;
+      editor.setOption("mode", mode);
+      }
+      //http://stackoverflow.com/questions/9506653/how-to-add-event-handlers-to-html-buttons-from-within-javascript-code
